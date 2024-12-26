@@ -1,0 +1,496 @@
+[
+  {
+    "objectID": "api/server.html",
+    "href": "api/server.html",
+    "title": "API Documentation",
+    "section": "",
+    "text": "The Review Rating API provides endpoints for predicting ratings from review texts using our trained RoBERTa model. The API supports both single and batch predictions.\n\n\n\n\n\n\n\nflowchart TD\n    A[Client] --&gt; B[\"/predict\"]\n    A --&gt; C[\"/batch-predict\"]\n    A --&gt; D[\"/health\"]\n    A --&gt; E[\"/logs\"]\n    B --&gt; F[RoBERTa Model]\n    C --&gt; F\n    F --&gt; G[Rating Prediction]\n\n\n\n\n\n\n\n\n\n\n\nEndpoint: /predict\nMethod: POST\nMakes a rating prediction for a single review text.\nRequest Body:\n{\n    \"text\": \"string\"\n}\nResponse:\n{\n    \"rating\": \"int (1-5)\",\n    \"confidence\": \"float (0-1)\"\n}\n\n\n\nEndpoint: /batch-predict\nMethod: POST\nMakes rating predictions for multiple reviews in a single request.\nRequest Body:\n{\n    \"data\": [\n        {\n            \"text\": \"string\"\n        }\n    ]\n}\nResponse:\n{\n    \"predictions\": [\n        {\n            \"rating\": \"int (1-5)\",\n            \"confidence\": \"float (0-1)\"\n        }\n    ]\n}\n\n\n\nEndpoint: /health\nMethod: GET\nChecks if the API and model are operational.\nResponse:\n{\n    \"status\": \"string\",\n    \"model_loaded\": \"boolean\"\n}\n\n\n\nEndpoint: /logs\nMethod: GET\nRetrieves filtered API usage logs.\nQuery Parameters: - limit: Number of log entries to return (default: 100) - level: Log level filter (optional) - start_date: Start date filter (YYYY-MM-DD, optional) - end_date: End date filter (YYYY-MM-DD, optional)\nResponse: List of log entries with timestamp, logger, level, and message.\n\n\n\n\n\n\n\n\nclass InputData(BaseModel):\n    text: str\n\n\n\nclass BatchInputData(BaseModel):\n    data: List[InputData]\n\n\n\n\n\n\nclass PredictionResponse(BaseModel):\n    rating: int        # Rating from 1 to 5\n    confidence: float  # Confidence score between 0 and 1\n\n\n\nclass BatchPredictionResponse(BaseModel):\n    predictions: List[PredictionResponse]\n\n\n\n\n\nThe API returns appropriate HTTP status codes:\n\n200: Successful request\n422: Invalid input format\n500: Server error (e.g., model prediction failure)\n\nError responses include a detail message explaining the error.\n\n\n\nThe API allows cross-origin requests with the following configuration: - All origins allowed (\"*\") - All methods allowed - All headers allowed - Credentials supported\n\n\n\nThe API logs all requests and errors to model_usage.log with the following format:\ntimestamp - logger_name - log_level - message\n\n\n\nThe complete OpenAPI specification for this API can be found below:",
+    "crumbs": [
+      "API",
+      "Server Documentation"
+    ]
+  },
+  {
+    "objectID": "api/server.html#overview",
+    "href": "api/server.html#overview",
+    "title": "API Documentation",
+    "section": "",
+    "text": "flowchart TD\n    A[Client] --&gt; B[\"/predict\"]\n    A --&gt; C[\"/batch-predict\"]\n    A --&gt; D[\"/health\"]\n    A --&gt; E[\"/logs\"]\n    B --&gt; F[RoBERTa Model]\n    C --&gt; F\n    F --&gt; G[Rating Prediction]",
+    "crumbs": [
+      "API",
+      "Server Documentation"
+    ]
+  },
+  {
+    "objectID": "api/server.html#api-endpoints",
+    "href": "api/server.html#api-endpoints",
+    "title": "API Documentation",
+    "section": "",
+    "text": "Endpoint: /predict\nMethod: POST\nMakes a rating prediction for a single review text.\nRequest Body:\n{\n    \"text\": \"string\"\n}\nResponse:\n{\n    \"rating\": \"int (1-5)\",\n    \"confidence\": \"float (0-1)\"\n}\n\n\n\nEndpoint: /batch-predict\nMethod: POST\nMakes rating predictions for multiple reviews in a single request.\nRequest Body:\n{\n    \"data\": [\n        {\n            \"text\": \"string\"\n        }\n    ]\n}\nResponse:\n{\n    \"predictions\": [\n        {\n            \"rating\": \"int (1-5)\",\n            \"confidence\": \"float (0-1)\"\n        }\n    ]\n}\n\n\n\nEndpoint: /health\nMethod: GET\nChecks if the API and model are operational.\nResponse:\n{\n    \"status\": \"string\",\n    \"model_loaded\": \"boolean\"\n}\n\n\n\nEndpoint: /logs\nMethod: GET\nRetrieves filtered API usage logs.\nQuery Parameters: - limit: Number of log entries to return (default: 100) - level: Log level filter (optional) - start_date: Start date filter (YYYY-MM-DD, optional) - end_date: End date filter (YYYY-MM-DD, optional)\nResponse: List of log entries with timestamp, logger, level, and message.",
+    "crumbs": [
+      "API",
+      "Server Documentation"
+    ]
+  },
+  {
+    "objectID": "api/server.html#data-models",
+    "href": "api/server.html#data-models",
+    "title": "API Documentation",
+    "section": "",
+    "text": "class InputData(BaseModel):\n    text: str\n\n\n\nclass BatchInputData(BaseModel):\n    data: List[InputData]\n\n\n\n\n\n\nclass PredictionResponse(BaseModel):\n    rating: int        # Rating from 1 to 5\n    confidence: float  # Confidence score between 0 and 1\n\n\n\nclass BatchPredictionResponse(BaseModel):\n    predictions: List[PredictionResponse]",
+    "crumbs": [
+      "API",
+      "Server Documentation"
+    ]
+  },
+  {
+    "objectID": "api/server.html#error-handling",
+    "href": "api/server.html#error-handling",
+    "title": "API Documentation",
+    "section": "",
+    "text": "The API returns appropriate HTTP status codes:\n\n200: Successful request\n422: Invalid input format\n500: Server error (e.g., model prediction failure)\n\nError responses include a detail message explaining the error.",
+    "crumbs": [
+      "API",
+      "Server Documentation"
+    ]
+  },
+  {
+    "objectID": "api/server.html#cors-configuration",
+    "href": "api/server.html#cors-configuration",
+    "title": "API Documentation",
+    "section": "",
+    "text": "The API allows cross-origin requests with the following configuration: - All origins allowed (\"*\") - All methods allowed - All headers allowed - Credentials supported",
+    "crumbs": [
+      "API",
+      "Server Documentation"
+    ]
+  },
+  {
+    "objectID": "api/server.html#logging",
+    "href": "api/server.html#logging",
+    "title": "API Documentation",
+    "section": "",
+    "text": "The API logs all requests and errors to model_usage.log with the following format:\ntimestamp - logger_name - log_level - message",
+    "crumbs": [
+      "API",
+      "Server Documentation"
+    ]
+  },
+  {
+    "objectID": "api/server.html#openapi-specification",
+    "href": "api/server.html#openapi-specification",
+    "title": "API Documentation",
+    "section": "",
+    "text": "The complete OpenAPI specification for this API can be found below:",
+    "crumbs": [
+      "API",
+      "Server Documentation"
+    ]
+  },
+  {
+    "objectID": "pipelines/data_science.html",
+    "href": "pipelines/data_science.html",
+    "title": "Data Science Pipeline",
+    "section": "",
+    "text": "This pipeline handles the training and evaluation of the RoBERTa-based review rating model. It includes model training with MLflow tracking and comprehensive evaluation metrics.",
+    "crumbs": [
+      "Pipelines",
+      "Data Science"
+    ]
+  },
+  {
+    "objectID": "pipelines/data_science.html#pipeline-structure",
+    "href": "pipelines/data_science.html#pipeline-structure",
+    "title": "Data Science Pipeline",
+    "section": "Pipeline Structure",
+    "text": "Pipeline Structure\n\n\n\n\n\nflowchart LR\n    A[train_dataset] --&gt; B[train_model_node]\n    D[params:model_params] --&gt; B\n    B --&gt; E[model]\n    E --&gt; F[evaluate_model_node]\n    C[test_dataset] --&gt; F\n    F --&gt; G[evaluation_report]",
+    "crumbs": [
+      "Pipelines",
+      "Data Science"
+    ]
+  },
+  {
+    "objectID": "pipelines/data_science.html#components",
+    "href": "pipelines/data_science.html#components",
+    "title": "Data Science Pipeline",
+    "section": "Components",
+    "text": "Components\n\nNodes\n\ntrain_model_node\nFunction: train_model\nDescription: Trains a RoBERTa model for review classification using Hugging Face’s Transformers library.\nInputs: - train_dataset: Training PyTorch dataset - test_dataset: Test PyTorch dataset - params:model_params: Training parameters\nOutputs: - model: Trained PyTorch model\nMLflow Tracking: - Training dataset size - Class distribution - Training loss - Model artifacts\n\n\nevaluate_model_node\nFunction: evaluate_model\nDescription: Evaluates the trained model on the test dataset using batched prediction.\nInputs: - model: Trained model - test_dataset: Test PyTorch dataset\nOutputs: - evaluation_report: Classification report with performance metrics\nMLflow Tracking: - Detailed classification report - F1-scores for each class",
+    "crumbs": [
+      "Pipelines",
+      "Data Science"
+    ]
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Review Rating Model Documentation",
+    "section": "",
+    "text": "Welcome to the documentation for the Review Rating Model project. This documentation provides comprehensive information about the project’s pipelines, API, and various documentation cards.\n\n\n\n\nThe project consists of two main pipelines:\n\nData Processing Pipeline\n\nHandles data splitting and preparation\nUses RoBERTa tokenizer for text processing\n\nData Science Pipeline\n\nTrains RoBERTa-based classification model\nPerforms model evaluation\n\n\n\n\n\nThe model is served through a FastAPI application that provides:\n\nReal-time prediction endpoints\nBatch prediction capabilities\nLogging and monitoring features\n\n\n\n\nThe project maintains three types of documentation cards:\n\nProject Card: Overall project information and metadata\nData Card: Dataset characteristics and quality metrics\nModel Card: Model specifications and performance metrics\n\n\n\n\n\nTo get started with the documentation:\n\nBrowse through the pipeline documentation to understand the data flow\nCheck the API documentation for integration details\nReview the cards for detailed specifications about different aspects of the project\n\n\nFramework: Kedro\nModel: RoBERTa (Hugging Face Transformers)\nExperiment Tracking: MLflow\nAPI: FastAPI\nDeployment: Docker\nDocumentation: Quarto"
+  },
+  {
+    "objectID": "index.html#key-components",
+    "href": "index.html#key-components",
+    "title": "Review Rating Model Documentation",
+    "section": "",
+    "text": "The project consists of two main pipelines:\n\nData Processing Pipeline\n\nHandles data splitting and preparation\nUses RoBERTa tokenizer for text processing\n\nData Science Pipeline\n\nTrains RoBERTa-based classification model\nPerforms model evaluation\n\n\n\n\n\nThe model is served through a FastAPI application that provides:\n\nReal-time prediction endpoints\nBatch prediction capabilities\nLogging and monitoring features\n\n\n\n\nThe project maintains three types of documentation cards:\n\nProject Card: Overall project information and metadata\nData Card: Dataset characteristics and quality metrics\nModel Card: Model specifications and performance metrics"
+  },
+  {
+    "objectID": "index.html#getting-started",
+    "href": "index.html#getting-started",
+    "title": "Review Rating Model Documentation",
+    "section": "",
+    "text": "To get started with the documentation:\n\nBrowse through the pipeline documentation to understand the data flow\nCheck the API documentation for integration details\nReview the cards for detailed specifications about different aspects of the project\n\n\nFramework: Kedro\nModel: RoBERTa (Hugging Face Transformers)\nExperiment Tracking: MLflow\nAPI: FastAPI\nDeployment: Docker\nDocumentation: Quarto"
+  },
+  {
+    "objectID": "cards/project_card.html",
+    "href": "cards/project_card.html",
+    "title": "Project Card",
+    "section": "",
+    "text": "The volume of user-generated content in the form of product reviews is a valuable source of customer sentiment and preferences. These reviews, when quantified into ratings, can provide significant insights for businesses, helping improve their products and services. By leveraging natural language processing, specifically sentiment analysis, businesses can automate the interpretation of vast amounts of textual feedback into structured ratings.\n\n\n\nOur e-commerce platform historically only collected text reviews without numerical ratings, limiting our ability to:\n\nGenerate accurate product recommendations\nSort products by customer satisfaction\nIdentify trending products\nFlag problematic products quickly\n\n\n\n\nThe primary customers for this project are:\n\nE-commerce platforms that aggregate customer reviews\nMarketing and product development teams interested in customer feedback analysis\nConsumer insight analysts focusing on sentiment analysis\nCompanies requiring tools for automated feedback processing\n\n\n\n\nOur ML-powered system predicts numerical ratings from textual reviews, enriching the data with actionable insights, thus:\n\nEnhancing the accuracy of product recommendations.\nEnabling better sorting of products by customer satisfaction.\nFacilitating quicker identification and resolution of issues with products.\nSupporting the discovery of trending products through data-driven insights.\n\n\n\n\nUsers will interact with a predictive model that offers:\n\nA pre-trained model fine-tuned on the Amazon Fine Food Reviews dataset to predict ratings from review text\nAn API to integrate this model into existing customer feedback systems or dashboards\nCustomizable model parameters that allow adaptation to specific business needs or datasets\nComprehensive documentation on model deployment and integration\nOngoing support and updates based on the latest advancements in NLP\n\n\n\n\n\nDevelop and validate a model that predicts ratings from review text with an accuracy exceeding 80% by Q2 2025\nLaunch a pilot with a major e-commerce platform to integrate the predictive model by Q3 20253.\nAchieve a user adoption rate of 50% among targeted customer segments within one year of release\nCollect and incorporate user feedback to refine the model and increase its prediction accuracy by Q4 2025\n\n\n\n\n\nEnsuring the model accurately interprets various linguistic nuances and sentiments expressed in review texts\nHandling the diversity of product contexts within reviews which may affect rating predictions\nAddressing the potential biases in the training data which could skew prediction outcomes\nManaging the expectations of stakeholders regarding the predictive accuracy and applicability of the model across different product categories",
+    "crumbs": [
+      "Cards",
+      "Project Card"
+    ]
+  },
+  {
+    "objectID": "cards/project_card.html#background",
+    "href": "cards/project_card.html#background",
+    "title": "Project Card",
+    "section": "",
+    "text": "The volume of user-generated content in the form of product reviews is a valuable source of customer sentiment and preferences. These reviews, when quantified into ratings, can provide significant insights for businesses, helping improve their products and services. By leveraging natural language processing, specifically sentiment analysis, businesses can automate the interpretation of vast amounts of textual feedback into structured ratings.",
+    "crumbs": [
+      "Cards",
+      "Project Card"
+    ]
+  },
+  {
+    "objectID": "cards/project_card.html#problem",
+    "href": "cards/project_card.html#problem",
+    "title": "Project Card",
+    "section": "",
+    "text": "Our e-commerce platform historically only collected text reviews without numerical ratings, limiting our ability to:\n\nGenerate accurate product recommendations\nSort products by customer satisfaction\nIdentify trending products\nFlag problematic products quickly",
+    "crumbs": [
+      "Cards",
+      "Project Card"
+    ]
+  },
+  {
+    "objectID": "cards/project_card.html#customer",
+    "href": "cards/project_card.html#customer",
+    "title": "Project Card",
+    "section": "",
+    "text": "The primary customers for this project are:\n\nE-commerce platforms that aggregate customer reviews\nMarketing and product development teams interested in customer feedback analysis\nConsumer insight analysts focusing on sentiment analysis\nCompanies requiring tools for automated feedback processing",
+    "crumbs": [
+      "Cards",
+      "Project Card"
+    ]
+  },
+  {
+    "objectID": "cards/project_card.html#value-proposition",
+    "href": "cards/project_card.html#value-proposition",
+    "title": "Project Card",
+    "section": "",
+    "text": "Our ML-powered system predicts numerical ratings from textual reviews, enriching the data with actionable insights, thus:\n\nEnhancing the accuracy of product recommendations.\nEnabling better sorting of products by customer satisfaction.\nFacilitating quicker identification and resolution of issues with products.\nSupporting the discovery of trending products through data-driven insights.",
+    "crumbs": [
+      "Cards",
+      "Project Card"
+    ]
+  },
+  {
+    "objectID": "cards/project_card.html#product",
+    "href": "cards/project_card.html#product",
+    "title": "Project Card",
+    "section": "",
+    "text": "Users will interact with a predictive model that offers:\n\nA pre-trained model fine-tuned on the Amazon Fine Food Reviews dataset to predict ratings from review text\nAn API to integrate this model into existing customer feedback systems or dashboards\nCustomizable model parameters that allow adaptation to specific business needs or datasets\nComprehensive documentation on model deployment and integration\nOngoing support and updates based on the latest advancements in NLP",
+    "crumbs": [
+      "Cards",
+      "Project Card"
+    ]
+  },
+  {
+    "objectID": "cards/project_card.html#objectives",
+    "href": "cards/project_card.html#objectives",
+    "title": "Project Card",
+    "section": "",
+    "text": "Develop and validate a model that predicts ratings from review text with an accuracy exceeding 80% by Q2 2025\nLaunch a pilot with a major e-commerce platform to integrate the predictive model by Q3 20253.\nAchieve a user adoption rate of 50% among targeted customer segments within one year of release\nCollect and incorporate user feedback to refine the model and increase its prediction accuracy by Q4 2025",
+    "crumbs": [
+      "Cards",
+      "Project Card"
+    ]
+  },
+  {
+    "objectID": "cards/project_card.html#risks-challenges",
+    "href": "cards/project_card.html#risks-challenges",
+    "title": "Project Card",
+    "section": "",
+    "text": "Ensuring the model accurately interprets various linguistic nuances and sentiments expressed in review texts\nHandling the diversity of product contexts within reviews which may affect rating predictions\nAddressing the potential biases in the training data which could skew prediction outcomes\nManaging the expectations of stakeholders regarding the predictive accuracy and applicability of the model across different product categories",
+    "crumbs": [
+      "Cards",
+      "Project Card"
+    ]
+  },
+  {
+    "objectID": "cards/project_card.html#task",
+    "href": "cards/project_card.html#task",
+    "title": "Project Card",
+    "section": "Task",
+    "text": "Task\nThis project involves a multi-class classification task using natural language processing to predict the rating (from 1 to 5) of a product based on customer review text. The RoBERTa language model, pre-trained on a diverse text corpus, will be fine-tuned on the Amazon Fine Food Reviews dataset.",
+    "crumbs": [
+      "Cards",
+      "Project Card"
+    ]
+  },
+  {
+    "objectID": "cards/project_card.html#metrics",
+    "href": "cards/project_card.html#metrics",
+    "title": "Project Card",
+    "section": "Metrics",
+    "text": "Metrics\n\nPrimary: Accuracy of predicted ratings\nSupporting metrics:\n\nMean Squared Error (MSE) – to quantify the average of the squares of the errors between the predicted and actual ratings.\nF1 Score for each class – to understand the balance between precision and recall across different rating levels.\nConfusion Matrix – to visualize the performance of the algorithm across the rating categories.",
+    "crumbs": [
+      "Cards",
+      "Project Card"
+    ]
+  },
+  {
+    "objectID": "cards/project_card.html#evaluation",
+    "href": "cards/project_card.html#evaluation",
+    "title": "Project Card",
+    "section": "Evaluation",
+    "text": "Evaluation\nEvaluation will be performed as follows:\n\nTrain/test split with 80/20 ratio to ensure sufficient testing data.\nApplication of cross-validation techniques to gauge the model’s performance across different subsets of data.\nUse of libraries like scikit-learn for implementing the training sessions and generating evaluation metrics.\nRegular monitoring of model performance during training to adjust parameters and improve outcomes.\nPeriodic updates and re-evaluation post-deployment to adapt to new data and user feedback.",
+    "crumbs": [
+      "Cards",
+      "Project Card"
+    ]
+  },
+  {
+    "objectID": "cards/project_card.html#data",
+    "href": "cards/project_card.html#data",
+    "title": "Project Card",
+    "section": "Data",
+    "text": "Data\n\nPrimary dataset: Amazon Fine Food Reviews dataset\nFeatures include:\n\nText of the review – Main feature used for training the model.\nLength of the review – Secondary feature that may be considered during feature engineering.\nUser and product metadata – Such as user ID and product ID that can be encoded and used for model enhancements.\n\nData Pipeline:\n\nData ingestion from dataset archives.\nInitial data cleaning to remove any irrelevant or missing data.\nPreprocessing steps including tokenization and encoding of text data using RoBERTa’s tokenizer.\nFeature engineering to potentially include review length and user/product interaction effects.\nTrain/test split as per the evaluation plan.",
+    "crumbs": [
+      "Cards",
+      "Project Card"
+    ]
+  },
+  {
+    "objectID": "cards/project_card.html#planroadmap",
+    "href": "cards/project_card.html#planroadmap",
+    "title": "Project Card",
+    "section": "Plan/Roadmap",
+    "text": "Plan/Roadmap\n\nPhase 1 - Initial Development\n\nSet up data preprocessing pipelines to prepare the review texts for model training.\nImplement a prototype model using a pre-trained RoBERTa model fine-tuned on the review data.\nDevelop a baseline model and benchmark its initial performance.\n\nPhase 2 - Model Optimization\n\nRefine the model based on initial test results, focusing on improving accuracy and reducing MSE.\nExplore advanced NLP techniques such as sentiment embedding to enhance model understanding.\nConduct extensive testing and validation to ensure robustness and scalability.\n\nPhase 3 - Deployment and Monitoring\n\nDeploy the model through an API for real-time rating prediction.\nEstablish a monitoring system using frameworks like TensorFlow Extended (TFX) for continuous evaluation.\nGather and incorporate user feedback to further refine the model.",
+    "crumbs": [
+      "Cards",
+      "Project Card"
+    ]
+  },
+  {
+    "objectID": "cards/project_card.html#continuous-improvement",
+    "href": "cards/project_card.html#continuous-improvement",
+    "title": "Project Card",
+    "section": "Continuous Improvement",
+    "text": "Continuous Improvement\n\nAutomated monitoring via:\n\nMLflow for experiment tracking to monitor model training sessions and hyperparameter tuning results.\nCustom logs in the model serving API to track predictions and request patterns, identifying potential anomalies or shifts in data distribution.\nUtilizing Evidently or similar tools to detect drift in data features or predictions over time.\n\nRegular Updates:\n\nPeriodic model retraining based on detected drift and performance metrics.\nOngoing analysis of feature importance to refine and optimize input variables.\nTracking of performance metrics such as accuracy and MSE to ensure the model meets business expectations.\nIncorporation of user feedback into model updates to enhance functionality and user satisfaction.",
+    "crumbs": [
+      "Cards",
+      "Project Card"
+    ]
+  },
+  {
+    "objectID": "cards/project_card.html#resources",
+    "href": "cards/project_card.html#resources",
+    "title": "Project Card",
+    "section": "Resources",
+    "text": "Resources\n\nHuman Resources\n\nData Science Team:\n\n1 ML Engineer responsible for model development and iteration.\n1 Data Engineer to manage data pipelines and ensure data quality and availability.\n1 MLOps Engineer to oversee the deployment, scaling, and monitoring of the model in production.\n\nProduct Team:\n\n1 Product Manager to coordinate project activities, aligning them with business goals.\n1 UX Designer to design and test the model interface to ensure usability.\n2 Full-stack Developers to integrate the model with the back-end systems and handle the front-end development.\n\nDomain Experts:\n\n1 NLP Scientist with expertise in text analysis and natural language understanding to provide guidance on model training and evaluation.\n1 User Experience Researcher to gather and interpret customer feedback to drive product improvements.\n\n\n\n\nCompute Resources\n\nDevelopment:\n\nUtilization of a local or cloud-based environment with Kedro for pipeline management.\nMLflow hosted on a dedicated server or cloud instance for tracking experiments and model versions.\nDevelopment databases to manage datasets, annotations, and test results.\n\nProduction:\n\nDeployment on a cloud platform such as AWS or Azure, utilizing their managed services for scalability and reliability.\nDedicated storage for model artifacts and a robust logging system for monitoring model performance.\nLoad balancing across multiple servers to manage the API’s user requests efficiently.\nImplementation of backup and disaster recovery strategies to ensure service continuity.\n\nStorage:\n\nSecure cloud storage solutions for sensitive data, ensuring compliance with data protection regulations.\nA model registry to manage different versions of the trained models.\nLog storage for maintaining detailed records of system operations and user interactions.\nBackup systems to safeguard data against accidental loss or corruption.",
+    "crumbs": [
+      "Cards",
+      "Project Card"
+    ]
+  },
+  {
+    "objectID": "cards/model_card.html",
+    "href": "cards/model_card.html",
+    "title": "Model Card",
+    "section": "",
+    "text": "This model card provides information about the Review Rating Prediction model, which predicts product review ratings on a scale of 1-5 stars based on review text.\n\n\nCode\nimport os\nimport mlflow\nimport pandas as pd\nimport numpy as np\nfrom datetime import datetime\nimport plotly.express as px\nimport plotly.graph_objects as go\nimport json\nimport plotly.io as pio\npio.renderers.default = \"notebook\"\n\n# Set MLflow tracking URI\nroot_dir = os.path.dirname(os.path.dirname(os.getcwd()))\nmlflow.set_tracking_uri(os.path.join(root_dir, 'mlruns'))\n\n# Helper functions for MLflow dataset handling\ndef get_dataset_by_context(inputs, context):\n    \"\"\"Get dataset information by context tag\"\"\"\n    for input_data in inputs:\n        for tag in input_data.tags:\n            if tag.key == 'mlflow.data.context' and tag.value == context:\n                return input_data.dataset\n    return None\n\ndef get_schema_info(dataset):\n    \"\"\"Extract schema information from dataset\"\"\"\n    if dataset and dataset.schema:\n        schema_dict = json.loads(dataset.schema)\n        return schema_dict.get('mlflow_colspec', [])\n    return []\n\ndef get_row_count(dataset):\n    \"\"\"Get number of rows from dataset profile\"\"\"\n    if dataset and dataset.profile:\n        profile_dict = json.loads(dataset.profile)\n        return profile_dict.get('num_rows', 0)\n    return 0\n\n# Get model and run information\nMODEL_NAME = \"review_rating_model\"\nclient = mlflow.tracking.MlflowClient()\n# latest_version = client.get_latest_versions(MODEL_NAME, stages=[\"None\"])[0]\nlatest_version = client.get_model_version(\"review_rating_model\", 9)\nrun = mlflow.get_run(latest_version.run_id)\n\n\n# Get dataset information\nvalidation_data = get_dataset_by_context(run.inputs.dataset_inputs, 'validation')\ntraining_data = get_dataset_by_context(run.inputs.dataset_inputs, 'training')\nraw_data = get_dataset_by_context(run.inputs.dataset_inputs, 'raw_data')\n\n# Display basic model info\nprint(f\"Model Version: {latest_version.version}\")\nprint(f\"Last Updated: {datetime.fromtimestamp(run.info.start_time/1000).strftime('%Y-%m-%d %H:%M:%S')}\")\n\n\nModel Version: 9\nLast Updated: 2024-11-21 00:58:51",
+    "crumbs": [
+      "Cards",
+      "Model Card"
+    ]
+  },
+  {
+    "objectID": "cards/model_card.html#model-description",
+    "href": "cards/model_card.html#model-description",
+    "title": "Model Card",
+    "section": "",
+    "text": "This model card provides information about the Review Rating Prediction model, which predicts product review ratings on a scale of 1-5 stars based on review text.\n\n\nCode\nimport os\nimport mlflow\nimport pandas as pd\nimport numpy as np\nfrom datetime import datetime\nimport plotly.express as px\nimport plotly.graph_objects as go\nimport json\nimport plotly.io as pio\npio.renderers.default = \"notebook\"\n\n# Set MLflow tracking URI\nroot_dir = os.path.dirname(os.path.dirname(os.getcwd()))\nmlflow.set_tracking_uri(os.path.join(root_dir, 'mlruns'))\n\n# Helper functions for MLflow dataset handling\ndef get_dataset_by_context(inputs, context):\n    \"\"\"Get dataset information by context tag\"\"\"\n    for input_data in inputs:\n        for tag in input_data.tags:\n            if tag.key == 'mlflow.data.context' and tag.value == context:\n                return input_data.dataset\n    return None\n\ndef get_schema_info(dataset):\n    \"\"\"Extract schema information from dataset\"\"\"\n    if dataset and dataset.schema:\n        schema_dict = json.loads(dataset.schema)\n        return schema_dict.get('mlflow_colspec', [])\n    return []\n\ndef get_row_count(dataset):\n    \"\"\"Get number of rows from dataset profile\"\"\"\n    if dataset and dataset.profile:\n        profile_dict = json.loads(dataset.profile)\n        return profile_dict.get('num_rows', 0)\n    return 0\n\n# Get model and run information\nMODEL_NAME = \"review_rating_model\"\nclient = mlflow.tracking.MlflowClient()\n# latest_version = client.get_latest_versions(MODEL_NAME, stages=[\"None\"])[0]\nlatest_version = client.get_model_version(\"review_rating_model\", 9)\nrun = mlflow.get_run(latest_version.run_id)\n\n\n# Get dataset information\nvalidation_data = get_dataset_by_context(run.inputs.dataset_inputs, 'validation')\ntraining_data = get_dataset_by_context(run.inputs.dataset_inputs, 'training')\nraw_data = get_dataset_by_context(run.inputs.dataset_inputs, 'raw_data')\n\n# Display basic model info\nprint(f\"Model Version: {latest_version.version}\")\nprint(f\"Last Updated: {datetime.fromtimestamp(run.info.start_time/1000).strftime('%Y-%m-%d %H:%M:%S')}\")\n\n\nModel Version: 9\nLast Updated: 2024-11-21 00:58:51",
+    "crumbs": [
+      "Cards",
+      "Model Card"
+    ]
+  },
+  {
+    "objectID": "cards/model_card.html#model-architecture",
+    "href": "cards/model_card.html#model-architecture",
+    "title": "Model Card",
+    "section": "Model Architecture",
+    "text": "Model Architecture\n\nType: RoBERTa-based Sequence Classification\nBase Model: RoBERTa Base\nTask: 5-class classification for review rating prediction\nOutput: Rating prediction (1-5 stars)",
+    "crumbs": [
+      "Cards",
+      "Model Card"
+    ]
+  },
+  {
+    "objectID": "cards/model_card.html#dataset-overview",
+    "href": "cards/model_card.html#dataset-overview",
+    "title": "Model Card",
+    "section": "Dataset Overview",
+    "text": "Dataset Overview\n\n\nCode\n# Display dataset statistics\nprint(\"Dataset Statistics:\")\n# print(f\"Training samples: {get_row_count(training_data):,}\")\n# print(f\"Validation samples: {get_row_count(validation_data):,}\")\n# print(f\"Raw data samples: {get_row_count(raw_data):,}\")\n\nprint(f\"Training samples: {454764:,}\")\nprint(f\"Validation samples: {113690:,}\")\nprint(f\"Raw data samples: {568454:,}\")\n\n# Display schema information\nif raw_data:\n    print(\"\\nFeature Information:\")\n    for col in get_schema_info(raw_data):\n        print(f\"- {col['name']} ({col['type']})\")\n\n\nDataset Statistics:\nTraining samples: 454,764\nValidation samples: 113,690\nRaw data samples: 568,454",
+    "crumbs": [
+      "Cards",
+      "Model Card"
+    ]
+  },
+  {
+    "objectID": "cards/model_card.html#model-performance",
+    "href": "cards/model_card.html#model-performance",
+    "title": "Model Card",
+    "section": "Model Performance",
+    "text": "Model Performance\n\n\nCode\n# Get histories for loss metrics\nmetrics_to_plot = ['train_loss', 'eval_loss', 'learning_rate', 'grad_norm']\nhistories = {\n    metric: client.get_metric_history(run.info.run_id, metric)\n    for metric in metrics_to_plot\n}\n\n# Create two subplots\nfig = go.Figure()\n\n# Add traces for losses\nfinal_metrics = run.data.metrics\n\n# Create evaluation loss plot\nfig = go.Figure()\nfig.add_trace(go.Scatter(\n    x=steps,\n    y=values,\n    name='Evaluation Loss',\n    mode='lines+markers'\n))\n\nfig.update_layout(\n    title='Evaluation Loss During Training',\n    xaxis_title='Step',\n    yaxis_title='Loss',\n    hovermode='x unified'\n)\nfig.show()\n\n# Display final metrics\nfinal_metrics = run.data.metrics\nprint(\"\\nFinal Metrics:\")\nprint(f\"Training Loss: {final_metrics.get('train_loss', 'N/A'):.4f}\")\nprint(f\"Evaluation Loss: {final_metrics.get('eval_loss', 'N/A'):.4f}\")\nprint(f\"Training Runtime: {final_metrics.get('train_runtime', 'N/A'):.2f}s\")\nprint(f\"Samples/second: {final_metrics.get('train_samples_per_second', 'N/A'):.2f}\")\n\n\n                                                \n\n\n\nFinal Metrics:\nTraining Loss: 0.6280\nEvaluation Loss: 0.5381\nTraining Runtime: 23582.44s\nSamples/second: 3.39",
+    "crumbs": [
+      "Cards",
+      "Model Card"
+    ]
+  },
+  {
+    "objectID": "cards/model_card.html#training-configuration",
+    "href": "cards/model_card.html#training-configuration",
+    "title": "Model Card",
+    "section": "Training Configuration",
+    "text": "Training Configuration\n\n\nCode\nparams = run.data.params\nfinal_metrics = run.data.metrics\n\ntraining_params = {\n    'Epochs': params.get('num_train_epochs', 'N/A'),\n    'Train Batch Size': params.get('per_device_train_batch_size', 'N/A'),\n    'Eval Batch Size': params.get('per_device_eval_batch_size', 'N/A'),\n    'Learning Rate': params.get('learning_rate', 'N/A'),\n    'Weight Decay': params.get('weight_decay', 'N/A'),\n    'Warmup Ratio': params.get('warmup_ratio', 'N/A'),\n    'Gradient Accumulation': params.get('gradient_accumulation_steps', 'N/A'),\n    'Max Gradient Norm': params.get('max_grad_norm', 'N/A'),\n    'Max Steps': params.get('max_steps', 'N/A'),\n    'FP16': params.get('fp16', 'N/A'),\n    'Eval Strategy': params.get('evaluation_strategy', 'N/A'),\n    'Eval Steps': params.get('eval_steps', 'N/A'),\n    'Save Steps': params.get('save_steps', 'N/A'),\n    'Dataloader Workers': params.get('dataloader_num_workers', 'N/A')\n}\n\nprint(\"Training Configuration:\")\nfor param, value in training_params.items():\n    print(f\"{param}: {value}\")\n\n\nTraining Configuration:\nEpochs: 1\nTrain Batch Size: 16\nEval Batch Size: 16\nLearning Rate: 2e-05\nWeight Decay: 0.01\nWarmup Ratio: 0.1\nGradient Accumulation: 2\nMax Gradient Norm: 1.0\nMax Steps: 2500\nFP16: True\nEval Strategy: steps\nEval Steps: 100\nSave Steps: 100\nDataloader Workers: 2",
+    "crumbs": [
+      "Cards",
+      "Model Card"
+    ]
+  },
+  {
+    "objectID": "cards/model_card.html#model-usage-guidelines",
+    "href": "cards/model_card.html#model-usage-guidelines",
+    "title": "Model Card",
+    "section": "Model Usage Guidelines",
+    "text": "Model Usage Guidelines\n\nIntended Uses\n\nAutomated prediction of product review ratings\nBulk processing of historical reviews\nQuality control for review submissions\n\n\n\nOut-of-Scope Uses\n\nSentiment analysis of non-product-related text\nAnalysis of non-English reviews\nReal-time/streaming predictions",
+    "crumbs": [
+      "Cards",
+      "Model Card"
+    ]
+  },
+  {
+    "objectID": "cards/model_card.html#limitations-and-biases",
+    "href": "cards/model_card.html#limitations-and-biases",
+    "title": "Model Card",
+    "section": "Limitations and Biases",
+    "text": "Limitations and Biases\n\nTechnical Limitations\n\nMaximum sequence length: 512 tokens\nEnglish-language only\nLimited to product review domain\nBatch processing only (not optimized for real-time)\n\n\n\nKnown Biases\n\nTraining data class imbalance (see distribution plot)\nDomain-specific vocabulary\nMay perform differently across product categories",
+    "crumbs": [
+      "Cards",
+      "Model Card"
+    ]
+  },
+  {
+    "objectID": "cards/model_card.html#model-maintenance",
+    "href": "cards/model_card.html#model-maintenance",
+    "title": "Model Card",
+    "section": "Model Maintenance",
+    "text": "Model Maintenance\n\nMonitoring Requirements\n\nData drift in review patterns\nPerformance across rating classes\nClass distribution changes\nCoverage of product categories\n\n\n\nRetraining Triggers\n\nPerformance below 0.8 F1-score per class\nSignificant data drift detected\nMajor changes in review patterns\n6-month deployment period",
+    "crumbs": [
+      "Cards",
+      "Model Card"
+    ]
+  },
+  {
+    "objectID": "cards/model_card.html#model-artifacts-and-governance",
+    "href": "cards/model_card.html#model-artifacts-and-governance",
+    "title": "Model Card",
+    "section": "Model Artifacts and Governance",
+    "text": "Model Artifacts and Governance\n\n\nCode\nprint(\"Model Information:\")\nprint(f\"Model Location: {latest_version.source}\")\nprint(f\"Run ID: {run.info.run_id}\")\nprint(f\"Artifact URI: {run.info.artifact_uri}\")\n\n\nModel Information:\nModel Location: file:///home/tathagat/workspace/projects/MLPE/tathagata-ai-839/review-rating/mlruns/863057453145536184/27e869ed62a3496fa284da0d956ee9e6/artifacts/model\nRun ID: 27e869ed62a3496fa284da0d956ee9e6\nArtifact URI: file:///home/tathagat/workspace/projects/MLPE/tathagata-ai-839/review-rating/mlruns/863057453145536184/27e869ed62a3496fa284da0d956ee9e6/artifacts",
+    "crumbs": [
+      "Cards",
+      "Model Card"
+    ]
+  },
+  {
+    "objectID": "cards/data_card.html",
+    "href": "cards/data_card.html",
+    "title": "Data Card",
+    "section": "",
+    "text": "Code\nimport os\nimport pandas as pd\nimport json\nfrom evidently.metric_preset import DataQualityPreset\nfrom evidently.metrics import DatasetCorrelationsMetric\nfrom evidently.report import Report\nimport json\nfrom rich import print\nfrom pathlib import Path\n\nfrom pathlib import Path\n\n# Data Quality Functions\ndef generate_data_quality_report(data: pd.DataFrame) -&gt; None:\n    data_quality_report = Report(\n        metrics=[DataQualityPreset(), DatasetCorrelationsMetric()]\n    )\n    relevant_data = data[['HelpfulnessNumerator', 'HelpfulnessDenominator', 'Score', 'Id']]\n    data_quality_report.run(current_data=relevant_data, reference_data=None)\n    root_dir = os.getcwd()\n    report_path = os.path.join(root_dir, 'docs_quarto', 'data_quality', 'data_quality_report.qmd')\n    os.makedirs(os.path.dirname(report_path), exist_ok=True)\n    html_content = data_quality_report.get_html()\n    with open(report_path, 'w') as f:\n        f.write(\"```{=html}\")\n        f.write(html_content)\n        f.write(\"```\")\n\ndef get_data_quality_metrics(data: pd.DataFrame) -&gt; dict:\n    metrics = {\n        \"num_features\": len(data.columns),\n        \"num_rows\": len(data),\n        \"missing_values\": data.isnull().sum().sum() / (data.shape[0] * data.shape[1])\n    }\n    return metrics\n\ndef run_data_quality_checks(df: pd.DataFrame) -&gt; dict:\n    generate_data_quality_report(df)\n    metrics = get_data_quality_metrics(df)\n    return metrics\n\n# Node Function\ndef create_data_card(loaded_data: pd.DataFrame, data_quality_metrics: dict) -&gt; str:\n    data_card = {\n        \"dataset_name\": \"Amazon Fine Food Reviews\",\n        \"number_of_rows\": len(loaded_data),\n        \"number_of_features\": len(loaded_data.columns),\n        \"feature_names\": list(loaded_data.columns),\n        \"data_quality_metrics\": data_quality_metrics,\n    }\n    return json.dumps(data_card)\n\n# Example usage\ndata_path = r'data/01_raw/Reviews.csv'  # Change this to the path of your dataset\ndata = pd.read_csv(data_path)\ndata_quality_metrics = run_data_quality_checks(data)\ndata_card_json = create_data_card(data, data_quality_metrics)\ndata_card = json.loads(data_card_json)\n\n\n\nName: Amazon Fine Food Reviews\nDescription: This dataset contains over 500,000 food reviews from Amazon users up to October 2012. Reviews include information about the product and user, with ratings, helpfulness votes, and a summary.\nDataset from time: Oct 1999 - Oct 2012\nVersion: 2.0\n\n\nDataset Characteristics\n\n\nCode\n# project_dir = Path().absolute().parent\n# data_card_path = project_dir / \"data\" / \"08_reporting\" / \"data-card\" / \"data_card.json\"\n\n# with open(data_card_path) as f:\n#     data_card = json.load(f)\n#     data_card = json.loads(data_card)\nprint(f\"\"\"• [bold]Number of Instances[/bold]: {data_card['number_of_rows']}\n• [bold]Number of Features[/bold]: {data_card['number_of_features']}\n• [bold]Target Variable[/bold]: y (boolean)\"\"\")\n\n\n• Number of Instances: 568454\n• Number of Features: 10\n• Target Variable: y (boolean)\n\n\n\n\n\nFeatures\n\n\nCode\nfeatures_list = [f\"{i + 1}. {data_card['feature_names'][i]}\" \n                 for i in range(len(data_card[\"feature_names\"]))]\nprint(\"\\n\".join(features_list))\n\n\n1. Id\n2. ProductId\n3. UserId\n4. ProfileName\n5. HelpfulnessNumerator\n6. HelpfulnessDenominator\n7. Score\n8. Time\n9. Summary\n10. Text\n\n\n\n\n\nData Collection\n\nMethod: Unknown\n\n\n\nIntended Use\n\nSentiment Analysis: Analyzing the sentiment of the reviews—whether they are positive, negative, or neutral. This is useful for understanding consumer opinions and improving products or services.\nText Classification: Classifying reviews into various categories based on their content, which could help in automatically sorting feedback into different areas such as packaging, taste, and customer service.\nRecommendation Systems: Using the ratings and reviews to build recommendation systems that can suggest products to users based on the preferences of similar users.\nLanguage Modeling: Training language models to generate text that mimics user-generated content, which can be useful for creating automated responses or new reviews for training.\nFeature Extraction: Extracting and analyzing specific features from the text, such as the use of adjectives, to study how language use affects the perception of a product.\nData Visualization: Visualizing data to identify trends and patterns in consumer behavior over time, across different products, or among different groups of reviewers.\n\n\n\nEthical Considerations\n\nEnsure fair and unbiased use of the data, particularly regarding protected attributes like personal status.\nBe cautious of potential biases in the original data collection process.\nConsider the implications of using this data for decision-making in financial contexts.\n\n\n\nKnown Limitations\n\nBias in Reviews: The dataset may not represent the general population as it only includes reviews from Amazon users who are more likely to provide feedback. Users who write reviews might differ significantly in their tastes and expectations from the average consumer.\nRating Inflation: There is often a tendency for review datasets to show rating inflation where the number of high ratings disproportionately exceeds lower ratings. This can skew analysis, particularly if the goal is to understand negative feedback.\nOutdated Information: As products and consumer preferences evolve over time, the reviews, especially older ones, may not accurately reflect the current status or quality of a product.\nMissing Context: Reviews may reference specific product versions, experiences, or events not fully detailed in the text, leading to potential misinterpretation of the sentiment or content of the review.\nText Quality: The quality of text in reviews can vary greatly. Some reviews may be very brief or poorly written, offering little useful information for analysis, while others may be verbose and detailed.\nSpam and Fake Reviews: The presence of spam or fake reviews can distort analysis, leading to inaccurate conclusions unless methods are in place to identify and filter out such content.\nLimited Demographic Data: The dataset primarily focuses on the text and ratings of reviews without providing detailed demographic information about the reviewers, which could be crucial for understanding preferences across different user segments.",
+    "crumbs": [
+      "Cards",
+      "Data Card"
+    ]
+  },
+  {
+    "objectID": "pipelines/data_processing.html",
+    "href": "pipelines/data_processing.html",
+    "title": "Data Processing Pipeline",
+    "section": "",
+    "text": "This pipeline handles the preprocessing of review data for training a RoBERTa-based classification model. It includes data splitting and dataset preparation with MLflow tracking.",
+    "crumbs": [
+      "Pipelines",
+      "Data Processing"
+    ]
+  },
+  {
+    "objectID": "pipelines/data_processing.html#pipeline-structure",
+    "href": "pipelines/data_processing.html#pipeline-structure",
+    "title": "Data Processing Pipeline",
+    "section": "Pipeline Structure",
+    "text": "Pipeline Structure\n\n\n\n\n\nflowchart LR\n    A[reviews] --&gt; B[split_data_node]\n    P[params:train_test_split] --&gt; B\n    B --&gt; C[train_data]\n    B --&gt; D[test_data]\n    C --&gt; E[prepare_datasets_node]\n    D --&gt; E\n    E --&gt; F[train_dataset]\n    E --&gt; G[test_dataset]\n    E --&gt; H[tokenizer]",
+    "crumbs": [
+      "Pipelines",
+      "Data Processing"
+    ]
+  },
+  {
+    "objectID": "pipelines/data_processing.html#components",
+    "href": "pipelines/data_processing.html#components",
+    "title": "Data Processing Pipeline",
+    "section": "Components",
+    "text": "Components\n\nNodes\n\nsplit_data_node\nFunction: split_data\nDescription: Splits input data into training and test sets while maintaining class distribution. Currently uses a subset of 5000 samples for testing purposes.\nInputs: - reviews: Raw reviews DataFrame - params:train_test_split: Parameters containing: - test_size: Fraction of data for testing - random_state: Random seed for reproducibility\nOutputs: - train_data: Training DataFrame - test_data: Test DataFrame\nMLflow Tracking: - Logs raw data, training data, and test data as MLflow inputs\n\n\nprepare_datasets_node\nFunction: prepare_datasets\nDescription: Creates PyTorch datasets from the split DataFrames using RoBERTa tokenizer.\nInputs: - train_data: Training DataFrame - test_data: Test DataFrame\nOutputs: - train_dataset: PyTorch training dataset - test_dataset: PyTorch test dataset - tokenizer: RoBERTa tokenizer instance\n\n\n\nDataset Class\n\nReviewDataset\nA PyTorch Dataset class for review data.\nParameters: - reviews: List of review text - scores: List of review scores - tokenizer: Tokenizer - max_length: Maximum length of input sequence (default: 512)\nOutput Format:\n{\n    'input_ids': tensor([...]),        # Tokenized text\n    'attention_mask': tensor([...]),   # Attention mask\n    'labels': tensor(score)            # Zero-based score (0-4)\n}",
+    "crumbs": [
+      "Pipelines",
+      "Data Processing"
+    ]
+  },
+  {
+    "objectID": "pipelines/data_monitoring.html",
+    "href": "pipelines/data_monitoring.html",
+    "title": "Data Monitoring Pipeline",
+    "section": "",
+    "text": "This pipeline implements data validation and drift detection for the review classification system. It uses the Evidently framework to monitor data quality and detect potential data distribution changes.",
+    "crumbs": [
+      "Pipelines",
+      "Data Monitoring"
+    ]
+  },
+  {
+    "objectID": "pipelines/data_monitoring.html#pipeline-structure",
+    "href": "pipelines/data_monitoring.html#pipeline-structure",
+    "title": "Data Monitoring Pipeline",
+    "section": "Pipeline Structure",
+    "text": "Pipeline Structure\n\n\n\n\n\nflowchart LR\n    A[reference_data] --&gt; B[run_data_validation_node]\n    C[current_data] --&gt; B\n    P[params:monitoring] --&gt; B\n    B --&gt; D[test_results]\n    B --&gt; E[html_report]",
+    "crumbs": [
+      "Pipelines",
+      "Data Monitoring"
+    ]
+  },
+  {
+    "objectID": "pipelines/data_monitoring.html#components",
+    "href": "pipelines/data_monitoring.html#components",
+    "title": "Data Monitoring Pipeline",
+    "section": "Components",
+    "text": "Components\n\nNodes\n\nrun_data_validation_node\nFunction: run_data_validation\nDescription: Runs a comprehensive suite of data validation tests comparing reference data with current data. Generates both programmatic test results and a human-readable HTML report.\nInputs: - reference_data: Reference DataFrame (baseline) - current_data: Current DataFrame to validate - params:monitoring: Parameters containing: - drift: Drift detection settings - cat_stattest: Statistical test for categorical variables - cat_stattest_threshold: P-value threshold for drift detection - drift_share: Maximum allowed share of drifted features\nOutputs: - test_results: Dictionary containing detailed test results - HTML report saved to data/09_monitoring/test_results.html\nTest Suite Components:\n\nMissing Values Test\n\nMonitors the share of missing values in the “Text” column\nFlags significant changes in missing value patterns\n\nData Structure Tests\n\nTestNumberOfConstantColumns: Detects columns with constant values\nTestNumberOfDuplicatedColumns: Identifies duplicate columns\nTestNumberOfDuplicatedRows: Monitors for duplicate records\n\nData Drift Detection\n\nMonitors distribution changes in the “Score” column\nUses statistical testing with configurable thresholds\nReports both individual feature drift and overall dataset drift\n\n\n\n\n\nError Handling and Logging\nThe pipeline implements comprehensive error handling and logging:\n\nDetailed Test Results: Each test’s status, parameters, and description are logged\nContext-Aware Failures: Failed tests include specific recommendations for remediation\nHTML Reports: Generated for each validation run with visualizations\nStructured Error Messages: Failures include:\n\nTest name and status\nTest parameters and thresholds\nDescriptive context\nRecommended actions\n\n\n\n\nUsage Example\n# Pipeline parameters example\nmonitoring_params = {\n    \"drift\": {\n        \"cat_stattest\": \"chi2\",\n        \"cat_stattest_threshold\": 0.05,\n        \"drift_share\": 0.3\n    }\n}\n\n# Running the pipeline\ntest_results = run_data_validation(\n    reference_data=reference_df,\n    current_data=current_df,\n    monitoring_params=monitoring_params\n)\n\n\nFailure Scenarios\nThe pipeline will raise a ValueError with detailed context when: - Data quality tests fail (e.g., unexpected duplicates) - Column structure changes are detected - Significant data drift is identified beyond thresholds",
+    "crumbs": [
+      "Pipelines",
+      "Data Monitoring"
+    ]
+  }
+]
